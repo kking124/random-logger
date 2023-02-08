@@ -4,7 +4,7 @@ c=0
 RANGE_MIN=100
 RANGE_MAX=500
 
-while [[ $# -gt 0 ]]
+while [ $# -gt 0 ]
 do
   key="$1"
   
@@ -50,7 +50,7 @@ do
       level="DEBUG"
       ;;
    esac
-   if[ -z "${JSON}" ]
+   if [ -z "${JSON}" ]
    then
        echo "$D $level $msg"
    else

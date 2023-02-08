@@ -22,16 +22,24 @@ do
     -j|--json)
     JSON=1
     ;;
+    -t|--timestamp)
+    TIMESTAMP=1
+    ;;
   esac
   shift # value
 done
 
 while [ $n -ne $c ]
 do
-   WAIT=$(shuf -i ${RANGE_MIN}-${RANGE_MAX} -n 1)
+   WAIT=$(shuf -i $RANGE_MIN-$RANGE_MAX -n 1)
    sleep $(echo "scale=4; $WAIT/1000" | bc)
    I=$(shuf -i 1-4 -n 1)
-   D=`date -Iseconds`
+   if [ -z "${TIMESTAMP}" ]
+   then
+    D=`date -Iseconds`
+   else
+    D=`date +%s%3N` #millisecond timestamp
+   fi
    case "$I" in
       "1") 
       msg="An error is usually an exception that has been caught and not handled."
@@ -54,7 +62,12 @@ do
    then
        echo "$D $level $msg"
    else
-       echo "{\"time\":\"$D\",\"level\":\"$level\",\"message\":\"$msg\"}"
+       if [ -z "${TIMESTAMP}" ]
+       then
+         echo "{\"time\":\"$D\",\"level\":\"$level\",\"message\":\"$msg\"}"
+       else
+         echo "{\"timestamp\":\"$D\",\"level\":\"$level\",\"message\":\"$msg\"}"
+       fi
    fi
    c=$(( c+1 ))
 done
